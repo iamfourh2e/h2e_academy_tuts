@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 func main() {
 	//data type
 	//int, int32, int64, float32, float64,
@@ -28,12 +30,31 @@ func main() {
 	// arr[4] = 5
 	//PointerA a x01234
 	//reused variable
-	var a int = 20
-	var b = &a
-	*b = 30
+	// var a int = 20
+	// var b = &a
+	// *b = 30
 	// var c = b
-	print(a)
+	person1 := Person{
+		Name: "Reaksmey Kevin",
+		Age:  30,
+		Dob:  "1993-01-01",
+	}
+	//object , class
+	person2 := Person{
+		Name: "Thkeam Reaksmey",
+		Age:  25,
+		Dob:  "1998-01-01",
+	}
+	fmt.Printf("Person 1: %+v\n", person1)
+	fmt.Printf("Person 2: %+v\n", person2)
 
 }
 
+type Person struct {
+	Name string
+	Age  int
+	Dob  string
+}
+
+// class Student {}
 //TEST SUIT
