@@ -2,59 +2,75 @@ package main
 
 import "fmt"
 
+type Product struct {
+	Name  string
+	Price float32
+	Qty   float32
+}
+
+type Order struct {
+	ID           string
+	Items        []Product
+	Discount     float32
+	DiscountType string
+	Subtotal     float32
+	Total        float32
+}
+
+func (o *Order) subtotal() {
+	var subtotalItem float32 = 0
+	for _, item := range o.Items {
+		subtotalItem += item.Price * item.Qty
+	}
+	o.Subtotal = subtotalItem
+}
+func (o *Order) total() {
+	var afterDiscount float32 = 0
+	if o.DiscountType == "percentage" {
+		afterDiscount = o.Subtotal - (o.Subtotal * (o.Discount / 100))
+	} else {
+		afterDiscount = o.Subtotal - o.Discount
+	}
+	o.Total = afterDiscount
+}
+
+func (o *Order) display() {
+	str := "----items----\n"
+	for i, item := range o.Items {
+		str += fmt.Sprintf("%d.%s %2.f x %2.f=%2.f\n", i+1, item.Name, item.Price, item.Qty, item.Price*item.Qty)
+	}
+	str += fmt.Sprintf("Subtotal: %2.f\n", o.Subtotal)
+	str += "-------------\n"
+	str += fmt.Sprintf("Discount: %2.f\n", o.Discount)
+	str += fmt.Sprintf("DiscountType: %s\n", o.DiscountType)
+	str += "-------------\n "
+	str += fmt.Sprintf("Total: %2.f", o.Total)
+	fmt.Println(str)
+
+}
 func main() {
-	//data type
-	//int, int32, int64, float32, float64,
-	// string, bool,byte, date,slice
-	// var a int = 10
-	// b := 20
-	// //- + * / % ++ -- **
-	// fmt.Printf("a + b = %d", a+b)
-	// var name string = "Reaksmey Kevin"
-	// replacedName := strings.ReplaceAll(name, "Kevin", "Thkeam")
-	// fmt.Printf("Hello, %s", replacedName)
-
-	// arr := []int{1, 2, 3, 4, 5} // growable array
-	// //arr.push(6)
-	// //arr.add(6)
-
-	// arr = append(arr, 6)
-	// for _, v := range arr {
-	// 	println(v)
-	// }
-	// arr := make([]int, 5) // create an array with length 5
-	// arr[0] = 1
-	// arr[1] = 2
-	// arr[2] = 3
-	// arr[3] = 4
-	// arr[4] = 5
-	//PointerA a x01234
-	//reused variable
-	// var a int = 20
-	// var b = &a
-	// *b = 30
-	// var c = b
-	person1 := Person{
-		Name: "Reaksmey Kevin",
-		Age:  30,
-		Dob:  "1993-01-01",
+	products := []Product{
+		{
+			Name:  "Mi Cheat",
+			Price: 4000,
+			Qty:   10,
+		},
+		{
+			Name:  "ABC",
+			Price: 4500,
+			Qty:   1,
+		},
 	}
-	//object , class
-	person2 := Person{
-		Name: "Thkeam Reaksmey",
-		Age:  25,
-		Dob:  "1998-01-01",
+	order := &Order{
+		ID:           "1",
+		Items:        products,
+		Discount:     10,
+		DiscountType: "percentage",
+		Subtotal:     0,
+		Total:        0,
 	}
-	fmt.Printf("Person 1: %+v\n", person1)
-	fmt.Printf("Person 2: %+v\n", person2)
+	order.subtotal()
+	order.total()
+	order.display()
 
 }
-
-type Person struct {
-	Name string
-	Age  int
-	Dob  string
-}
-
-// class Student {}
-//TEST SUIT
