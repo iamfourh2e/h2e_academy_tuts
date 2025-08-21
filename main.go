@@ -2,59 +2,48 @@ package main
 
 import "fmt"
 
+type Sensor struct {
+	Name        string  //""
+	Id          string  //""
+	Temperature float32 //0
+}
+
+// struct receiver function
+func (s *Sensor) convertToCelsius() {
+	//convert to celsius
+	celcius := (s.Temperature - 32) * 5 / 9
+	fmt.Printf("Sensor Name: %s, ftoc: %f\n", s.Name, celcius)
+}
+
+func (s *Sensor) displayInfo() {
+	fmt.Printf("Sensor Name: %s, Id: %s, Temperature: %f\n", s.Name, s.Id, s.Temperature)
+}
+
 func main() {
-	//data type
-	//int, int32, int64, float32, float64,
-	// string, bool,byte, date,slice
-	// var a int = 10
-	// b := 20
-	// //- + * / % ++ -- **
-	// fmt.Printf("a + b = %d", a+b)
-	// var name string = "Reaksmey Kevin"
-	// replacedName := strings.ReplaceAll(name, "Kevin", "Thkeam")
-	// fmt.Printf("Hello, %s", replacedName)
-
-	// arr := []int{1, 2, 3, 4, 5} // growable array
-	// //arr.push(6)
-	// //arr.add(6)
-
-	// arr = append(arr, 6)
-	// for _, v := range arr {
-	// 	println(v)
-	// }
-	// arr := make([]int, 5) // create an array with length 5
-	// arr[0] = 1
-	// arr[1] = 2
-	// arr[2] = 3
-	// arr[3] = 4
-	// arr[4] = 5
-	//PointerA a x01234
-	//reused variable
-	// var a int = 20
-	// var b = &a
-	// *b = 30
-	// var c = b
-	person1 := Person{
-		Name: "Reaksmey Kevin",
-		Age:  30,
-		Dob:  "1993-01-01",
+	//	sensor := new(Sensor)
+	//	fmt.Printf("%v", sensor)
+	// sensor.Name = "Temperature Sensor"
+	// sensor.Id = "TS001"
+	// sensor.Flow = 100
+	sensor := &Sensor{
+		Name:        "Temperature Sensor",
+		Id:          "TS001",
+		Temperature: 90, //farenheit, celcius
 	}
-	//object , class
-	person2 := Person{
-		Name: "Thkeam Reaksmey",
-		Age:  25,
-		Dob:  "1998-01-01",
-	}
-	fmt.Printf("Person 1: %+v\n", person1)
-	fmt.Printf("Person 2: %+v\n", person2)
+	//pointer * value & address
+	//sensor.convertToCelsius() //call the method on the struct
+	sensor.displayInfo() // call the method to display info
 
 }
 
-type Person struct {
-	Name string
-	Age  int
-	Dob  string
-}
-
-// class Student {}
-//TEST SUIT
+// return,  void
+//func convertToCelsiusReturn(sensor *Sensor) float32 {
+//	return (sensor.Temperature - 32) * 5 / 9
+//}
+//
+//func convertToCelsius(sensor *Sensor) {
+//	celcius := (sensor.Temperature - 32) * 5 / 9
+//
+//	fmt.Printf("Sensor Name: %s\n, ftoc: %f", sensor.Name, celcius)
+//
+//}
