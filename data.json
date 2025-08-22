@@ -1,0 +1,13 @@
+{ 
+  "name": "kevin",
+  "age": 18,
+  "isStudent": true,
+  "favourites": ["volleyball", "swimming", "researching"],
+  "address": {
+    "street": "123 Main St",
+        "city": "Battambang"
+  },
+  "createdAt": "2025-01-01T00:00:00Z",
+  "lastLogin": null
+
+}
