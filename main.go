@@ -22,7 +22,6 @@ var Database []Student = []Student{}
 func main() {
 	db := "tuts"
 	client := LoadMongoDB("mongodb://localhost:27017")
-	fmt.Println("")
 	fmt.Printf("Succesfully connect to mongodb")
 
 	route := gin.Default()

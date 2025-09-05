@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -14,10 +15,11 @@ import (
 type UserModel struct {
 	//bson using with mongodb
 	ID       string `json:"id,omitempty" bson:"_id,omitempty"`
-	Username string `json:"username" bson:"username"`
-	Password string `json:"password" bson:"password"`
-	FullName string `json:"fullName" bson:"full_name"`
+	Username string `json:"username" bson:"username" binding:"required"`
+	Password string `json:"password" bson:"password" binding:"required"`
+	FullName string `json:"fullName,omitempty" bson:"full_name"`
 	Tel      string `json:"tel,omitempty" bson:"tel,omitempty"`
+	Role     string `json:"role,omitempty" bson:"role,omitempty"`
 }
 
 // we need to set id before insert
@@ -49,4 +51,13 @@ func NewUserService(client *mongo.Client, dbName string) *UserService {
 func (s *UserService) CreateUser(user *UserModel) (*mongo.InsertOneResult, error) {
 	res, err := s.UserCol.InsertOne(context.Background(), user)
 	return res, err
+}
+func (s *UserService) FindUserByUsername(username string) (*UserModel, error) {
+	filter := bson.M{"username": username}
+	var user *UserModel
+	err := s.UserCol.FindOne(context.Background(), filter).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
