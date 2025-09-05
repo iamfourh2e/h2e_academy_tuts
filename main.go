@@ -1,9 +1,14 @@
 package main
 
 import (
-	"net/http"
+	"context"
+	"fmt"
+	"go_tuts/routes"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Student struct {
@@ -15,65 +20,29 @@ type Student struct {
 var Database []Student = []Student{}
 
 func main() {
-	r := gin.Default()
-	//POST
-	r.POST("/v1/students", func(ctx *gin.Context) {
-		student := &Student{}
-		err := ctx.ShouldBind(&student)
-		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		Database = append(Database, *student)
-		ctx.JSON(http.StatusOK, gin.H{"message": "Student created successfully", "data": student})
-	})
-	r.GET("/v1/students/:id", func(ctx *gin.Context) {
-		id := ctx.Param("id")
-		for _, student := range Database {
-			if student.ID == id {
-				ctx.JSON(http.StatusOK, gin.H{"message": "Student found", "data": student})
-				return
-			}
-		}
-		ctx.JSON(http.StatusNotFound, gin.H{"message": "Student not found"})
-	})
-	r.PUT("/v1/students/:id", func(ctx *gin.Context) {
-		id := ctx.Param("id")                   // retrieve student id
-		studentToUpdate := &Student{}           //declare new student data
-		err := ctx.ShouldBind(&studentToUpdate) // apply data to student object
-		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid request"})
-			return
-		}
-		for i, student := range Database {
-			if student.ID == id {
-				studentToUpdate.ID = id
-				Database[i] = *studentToUpdate
-				ctx.JSON(http.StatusOK, gin.H{"message": "Student updated successfully", "data": studentToUpdate})
-				return
-			}
-		}
-		ctx.JSON(http.StatusNotFound, gin.H{"message": "Student not found"})
-	})
+	db := "tuts"
+	client := LoadMongoDB("mongodb://localhost:27017")
+	fmt.Println("")
+	fmt.Printf("Succesfully connect to mongodb")
 
-	r.GET("/v1/students", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK,
-			gin.H{"message": "Students fetched successfully", "data": Database})
-	})
-	r.DELETE("/v1/students/:id", func(ctx *gin.Context) {
-		//5 elements 0 -> 4
-		// numbers := []int{1, 2, 3, 4, 5}
-		// numbers = append(numbers[:2], numbers[3:]...)
-		// fmt.Printf("%v", numbers)
-		id := ctx.Param("id")
-		for i, student := range Database {
-			if student.ID == id {
-				Database = append(Database[:i], Database[i+1:]...)
-				ctx.JSON(http.StatusOK, gin.H{"message": "Student deleted successfully"})
-				return
-			}
-		}
-		ctx.JSON(http.StatusNotFound, gin.H{"message": "Student not found"})
-	})
-	r.Run(":4000")
+	route := gin.Default()
+	routes.UserRoute(route, client, db)
+
+	route.Run(":8080")
+
+}
+
+// context, Future (async await)
+func LoadMongoDB(mongoUrl string) *mongo.Client {
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoUrl))
+	if err != nil {
+		panic(err)
+	}
+	//mysql client
+	//postgres client
+	//mongo client  (create , read, update ,delete )
+	return client
+
 }
