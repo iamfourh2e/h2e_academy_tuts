@@ -26,6 +26,7 @@ func main() {
 
 	route := gin.Default()
 	routes.UserRoute(route, client, db)
+	routes.ProductRoute(route)
 
 	route.Run(":8080")
 

@@ -24,3 +24,19 @@ func (u *UserClaimModel) GenerateToken(userModel *UserModel) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, u)
 	return token.SignedString([]byte("verysecret"))
 }
+
+// client -> token -> server
+// check whether the token is valid
+func ClaimToken(token string) (*UserClaimModel, error) {
+	t, err := jwt.ParseWithClaims(token, &UserClaimModel{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte("verysecret"), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := t.Claims.(*UserClaimModel)
+	if ok && t.Valid {
+		return claims, nil
+	}
+	return nil, nil
+}
